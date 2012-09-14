@@ -21,9 +21,13 @@ module SimpleCov
     def initialize(original_result)
       @original_result = original_result.freeze
       @files = SimpleCov::FileList.new(original_result.map do |filename, coverage|
-        SimpleCov::SourceFile.new(filename, coverage) if File.file?(filename)
+        SimpleCov::SourceFile.new(filename, coverage, lines_for_filename(filename))# if File.file?(filename)
       end.compact.sort_by(&:filename))
       filter!
+    end
+
+    def lines_for_filename(filename)
+      return nil
     end
 
     # Returns all filenames for source files contained in this result
