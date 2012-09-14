@@ -77,10 +77,10 @@ module SimpleCov
     attr_reader :src
     alias_method :source, :src
 
-    def initialize(filename, coverage, lines = nil)
+    def initialize(filename, coverage, sourcelines = nil)
       @filename, @coverage = filename, coverage
-      if lines
-        @src = lines
+      if sourcelines
+        @src = sourcelines
       else
         File.open(filename, "r:UTF-8") {|f| @src = f.readlines }
       end

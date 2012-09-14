@@ -215,6 +215,10 @@ module SimpleCov::Configuration
     filters << parse_filter(filter_argument, &filter_proc)
   end
 
+  def clear_filters
+    @filters = []
+  end
+
   #
   # Define a group for files. Works similar to add_filter, only that the first
   # argument is the desired group name and files PASSING the filter end up in the group

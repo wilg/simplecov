@@ -18,16 +18,23 @@ module SimpleCov
 
     # Initialize a new SimpleCov::Result from given Coverage.result (a Hash of filenames each containing an array of
     # coverage data)
-    def initialize(original_result)
+    def initialize(original_result, sources = nil)
       @original_result = original_result.freeze
+      @sources = sources
       @files = SimpleCov::FileList.new(original_result.map do |filename, coverage|
-        SimpleCov::SourceFile.new(filename, coverage, lines_for_filename(filename))# if File.file?(filename)
+        puts "mapping file"
+        SimpleCov::SourceFile.new(filename, coverage, lines_for_filename(filename))
       end.compact.sort_by(&:filename))
+      puts "file count: #{@files.length}"
       filter!
     end
 
     def lines_for_filename(filename)
-      return nil
+      # if File.file?(filename)
+      #   nil
+      # else
+      @sources[filename].lines.map{|line| line} if @sources
+      # end 
     end
 
     # Returns all filenames for source files contained in this result
@@ -112,9 +119,9 @@ module SimpleCov
     end
 
     # Loads a SimpleCov::Result#to_hash dump
-    def self.from_hash(hash)
+    def self.from_hash(hash, sources = nil)
       command_name, data = hash.first
-      result = SimpleCov::Result.new(data["coverage"])
+      result = self.new(data["coverage"], sources)
       result.command_name = command_name
       result.created_at = Time.at(data["timestamp"])
       result
@@ -124,7 +131,9 @@ module SimpleCov
 
     # Applies all configured SimpleCov filters on this result's source files
     def filter!
+      puts "filtering: before #{@files.length}"
       @files = SimpleCov.filtered(files)
+      puts "filtering: after #{@files.length}"
     end
   end
 end
