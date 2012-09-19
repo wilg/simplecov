@@ -22,10 +22,8 @@ module SimpleCov
       @original_result = original_result.freeze
       @sources = sources
       @files = SimpleCov::FileList.new(original_result.map do |filename, coverage|
-        puts "mapping file"
         SimpleCov::SourceFile.new(filename, coverage, lines_for_filename(filename))
       end.compact.sort_by(&:filename))
-      puts "file count: #{@files.length}"
       filter!
     end
 
@@ -131,9 +129,7 @@ module SimpleCov
 
     # Applies all configured SimpleCov filters on this result's source files
     def filter!
-      puts "filtering: before #{@files.length}"
       @files = SimpleCov.filtered(files)
-      puts "filtering: after #{@files.length}"
     end
   end
 end
